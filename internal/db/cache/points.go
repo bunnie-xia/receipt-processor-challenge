@@ -10,6 +10,7 @@ import (
 	// "reflect"
 	"strings"
 	"project/internal/db/receipts"
+	// "project/internal/db/llm"
 )
 
 // var points = 0
@@ -41,9 +42,7 @@ func itemPoints(items [][]string) int {
 		if len(item) < 2 {
 			continue
 		}
-		fmt.Println("~~")
-		// descrip := item.ShortDescription
-		// price := item.Price
+
 		descrip := item[0]
 		price := item[1]
 		if descrip != "" && len(descrip) % 3 == 0 {
@@ -142,10 +141,24 @@ func receiptTotalPricePoints(receipt receipts.Receipt, id string) int {
 }
 
 func llmPoints(receipt receipts.Receipt, id string) int {
-	if isLLMGenerated(receipt, id) == true && (receipt.Total > float64(10.00)) {
-		fmt.Println("llmPoinits: ", 5)
-		return 5
+	if len(receipt.Items) < 100 {
+		if isLLMGenerated(receipt, id) == true {
+			fmt.Println("llmPoinits: true", true)
+			return 0
+		}
+		if isLLMGenerated(receipt, id) == true && (float64(receipt.Total) > float64(10.00)) {
+			fmt.Println("llmPoinits: ", 5)
+			return 5
+		}
+		fmt.Println("llmPoinits: ", 0)
+		return 0
 	}
+	// else {
+	// 	if largeDataIsLLMGenerated(receipt, id) {
+	// 		fmt.Println("llmPoinits: ", 5)
+	// 		return 5
+	// 	}
+	// }
 	fmt.Println("llmPoinits: ", 0)
 	return 0
 }
@@ -161,7 +174,7 @@ func CalculatePoints(targetId string) int {
 	points += purchaseTimePoints(receipt)
 	points += everyTwoItemPoints(items)
 	points += receiptTotalPricePoints(receipt, targetId)
-	// points += llmPoints(items[0], targetId)
+	points += llmPoints(receipt, targetId)
 
 	return points
 }

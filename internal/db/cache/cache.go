@@ -76,7 +76,6 @@ func getItemInfo(items []receipts.Items) [][]string {
 		// res[0] = append(res[0], descrip)
 		// res[1] = append(res[1], price)
 
-
 		priceFloat, err := strconv.ParseFloat(price, 64)
 		if err != nil {
 			fmt.Println("Error parsing price:", err)
@@ -90,12 +89,15 @@ func getItemInfo(items []receipts.Items) [][]string {
 
 func getTotalPrice(id string) float64 {
 	receipt := getCachedReceipt(id)
-	if receipt.Total == float64(0.00) {
-		total := math.Round(TotalPrice * 100)/ 100
-		receipt.Total = total
+	total := TotalPrice
+	if int(receipt.Total) == 0 {
+		TotalPrice = float64(0)
+		return math.Round(total * 100)/ 100
+		// receipt.Total = total
+
 	}
 
-	return receipt.Total
+	return total
 }
 // func getPoints(id string) {
 // 	if id == "" {
