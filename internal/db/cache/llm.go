@@ -93,7 +93,7 @@ func isLLMGenerated(receipt receipts.Receipt, id string) bool {
 	behaviorsCount := 0
 	totalTest := 2
 
-	/** test data prepand "overrideToTrue" checks **/
+	/** test data prep and "overrideToTrue" checks **/
 	// retailer
 	preLen := len(receipt.Retailer)
 	retailerStr := strings.TrimSpace(receipt.Retailer)

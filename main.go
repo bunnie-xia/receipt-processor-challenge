@@ -26,9 +26,14 @@ func main() {
     c.JSON(http.StatusOK, gin.H{"id": id})
   })
 
+  router.GET("/", func(c *gin.Context) {
+    // c.String(200, "Welcome.")
+    c.Redirect(302, "/receipts/:id/points")
+  })
 
   router.GET("/receipts/:id/points", func(c *gin.Context) {
     id := c.Param("id")
+    
     c.JSON(http.StatusOK, gin.H{"points": cache.CachePoints[id]})
   })
 
