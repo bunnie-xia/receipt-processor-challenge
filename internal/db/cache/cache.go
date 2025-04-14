@@ -11,15 +11,15 @@ import (
 )
 
 
-var CacheMap = make(map[interface{}]receipts.Receipt)
+var CacheMap = make(map[string]receipts.Receipt)
 var CachePoints = make(map[string]int)
 
 var calculatedTotal float64 = 0.00
 
 func Set(receipt receipts.Receipt) string {
-	for key, cached := range CacheMap {
+	for id, cached := range CacheMap {
 		if reflect.DeepEqual(receipt, cached) {
-			fmt.Println("Receipt is aleady posted with id: %s\n", key)
+			fmt.Println("Receipt is aleady posted with total points received: ", CachePoints[id])
 		}
 	}
 
