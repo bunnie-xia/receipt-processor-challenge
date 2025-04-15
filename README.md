@@ -1,7 +1,7 @@
 # Project Requirements
 
 ### Development Requirements Summary
-- Data does not need to persist and cache information in memory.
+- Data does not need to persist.
 - Shall assume docker is already installed.
 - Use the described APIs.
 
