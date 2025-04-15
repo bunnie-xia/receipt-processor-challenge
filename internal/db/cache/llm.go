@@ -1,16 +1,14 @@
 package cache
 
 import (
-  "fmt"
-	// "strconv"
   "strings"
-	// "math"
 	"sort"
 	"project/internal/db/receipts"
-	// "project/internal/db/cache"
 )
+
 var percent float64 = 0.80
 var overrideToTrue bool = false
+
 
 func isLLMtext(words []string) bool {
 	if words == nil|| len(words) == 1 {
@@ -95,7 +93,7 @@ func isLLMGenerated(receipt receipts.Receipt, id string) bool {
 	behaviorsCount := 0
 	totalTest := 2
 
-	/** preparing testing data and checking overrides **/
+	/** test data prep and "overrideToTrue" checks **/
 	// retailer
 	preLen := len(receipt.Retailer)
 	retailerStr := strings.TrimSpace(receipt.Retailer)
@@ -114,23 +112,12 @@ func isLLMGenerated(receipt receipts.Receipt, id string) bool {
 	itemPriceList := itemInfo[1]
 
 
-	// totalStr := fmt.Sprintf("%.2f", getTotalPrice(id))
-
-	// Debugging prints
-	// fmt.Println("Retailer:", retailer)
-	// fmt.Println("Item Descriptions:", itemDesList)
-	// fmt.Println("Item Prices:", itemPriceList)
-	// // fmt.Println("Total String:", totalStr)
-	// fmt.Println("Total String:", receipt.Total)
-
 	/**
 		behavior tendency %
 	**/
-
 	// test: retailer
 	if isLLMtext(retailer) {
 		behaviorsCount++
-		fmt.Println("retailer: ", behaviorsCount)
 	}
 
 	// test: itemDesList
@@ -139,13 +126,11 @@ func isLLMGenerated(receipt receipts.Receipt, id string) bool {
 		if isLLMtext(strings.Split(description, " ")) {
 			cnt++
 			behaviorsCount += 2
-			// fmt.Println("description: ", behaviorsCount)
 		}
 	}
 	totalTest += len(itemDesList)
 
 	if float64(cnt) / float64(len(itemDesList)) > float64(percent) {
-		fmt.Println("result: true", cnt )
 		return true
 	}
 
@@ -154,16 +139,7 @@ func isLLMGenerated(receipt receipts.Receipt, id string) bool {
 		behaviorsCount++
 	}
 	totalTest += len(itemPriceList)
-	fmt.Println("totalTest: ", totalTest)
-	fmt.Println("cnt: ", behaviorsCount)
-	// fmt.Println("receipt.Total: ", receipt.Total)
-	// fmt.Println("percent: ", float64(behaviorsCount) / float64(totalTest))
 
-	// test: total
-	// if int(receipt.Total) == 0 {
-	// 	return false
-	// }
-	fmt.Println("result: ", float64(behaviorsCount) / float64(totalTest) > float64(percent))
 	return float64(behaviorsCount) / float64(totalTest) > float64(percent)
 }
 
