@@ -1,10 +1,9 @@
 # Project Requirements
 
 ### Development Requirements Summary
-- Use local cache.
+- Data does not need to persist and cache information in memory.
 - Shall assume docker is already installed.
 - Use the described APIs.
-
 
 ### POST
 **Endpoint:** "/receipts/{id}/points"
