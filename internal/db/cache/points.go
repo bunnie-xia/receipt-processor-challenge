@@ -7,7 +7,6 @@ import (
   "time"
 	"strings"
 	"project/internal/db/receipts"
-	// "project/internal/db/llm"
 )
 
 
@@ -97,14 +96,26 @@ func everyTwoItemPoints(items [][]string) int {
 	return points
 }
 
+// receiptTotalPricePoints
+func roundedRcptTotal(id string) string {
+	receipt := getCachedReceipt(id)
+	if receipt.Total == "" {
+		return "-0.01" // decimal points for verifying conditions; negative for intuitive false
+	}
+
+	total, err := strconv.ParseFloat(receipt.Total, 64)
+	if err != nil {
+			fmt.Println("Error parsing total to float:", err)
+			return "-0.01"
+	}
+
+	roundedFloat := math.Round(total * 100) / 100
+	floatStr := strconv.FormatFloat(roundedFloat, 'f', 2, 64)
+	return floatStr
+}
 
 func receiptTotalPricePoints(receipt receipts.Receipt, id string) int {
 	pts := 0
-	// roundedTotal := 0.00
-	// if receipt.Total == "" {
-	// 	roundedTotal = roundedCalTotal(id)
-	// }
-
 	roundedTotalStr := roundedRcptTotal(id)
 
 	if fmt.Sprintf("%.2f", roundedTotalStr) == fmt.Sprintf("%.2f", receipt.Total) {
@@ -138,6 +149,25 @@ func llmPoints(receipt receipts.Receipt, id string) int {
 	return 0
 }
 
+func getItemInfo(items []receipts.Items) [][]string {
+	res := [][]string{}
+
+	for _, item := range items {
+		descrip := strings.TrimSpace(item.ShortDescription)
+		price := item.Price
+
+		res = append(res, []string {descrip, price})
+
+		priceFloat, err := strconv.ParseFloat(price, 64)
+		if err != nil {
+			fmt.Println("Error parsing price:", err)
+			continue
+		}
+		calculatedTotal += priceFloat
+	}
+
+	return res
+}
 
 func CalculatePoints(targetId string) int {
 	receipt := getCachedReceipt(targetId)

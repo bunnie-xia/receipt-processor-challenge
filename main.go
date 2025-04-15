@@ -19,27 +19,13 @@ func main() {
     }
 
     id := cache.Set(receipt)
-
     cache.CachePoints[id] = cache.CalculatePoints(id)
-
 
     c.JSON(http.StatusOK, gin.H{"id": id})
   })
 
-  router.GET("/", func(c *gin.Context) {
-    // c.String(200, "Please post first.")
-    c.Redirect(302, "/receipts/:id/points")
-  })
-
-  router.GET("/receipts", func(c *gin.Context) {
-    id := c.Param("id")
-
-    c.JSON(http.StatusOK, gin.H{"points": cache.CachePoints[id]})
-  })
-
   router.GET("/receipts/:id/points", func(c *gin.Context) {
     id := c.Param("id")
-
     c.JSON(http.StatusOK, gin.H{"points": cache.CachePoints[id]})
   })
 

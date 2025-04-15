@@ -4,9 +4,6 @@ import (
 	"project/internal/db/receipts"
 	"reflect"
 	"fmt"
-	"strings"
-  "strconv"
-  "math"
 	"github.com/google/uuid"
 )
 
@@ -43,41 +40,3 @@ func getCachedReceipt(id string) receipts.Receipt {
 	return receipt
 }
 
-
-func getItemInfo(items []receipts.Items) [][]string {
-	res := [][]string{}
-
-	for _, item := range items {
-		descrip := strings.TrimSpace(item.ShortDescription)
-		price := item.Price
-
-		res = append(res, []string {descrip, price})
-
-		priceFloat, err := strconv.ParseFloat(price, 64)
-		if err != nil {
-			fmt.Println("Error parsing price:", err)
-			continue
-		}
-		calculatedTotal += priceFloat
-	}
-
-	return res
-}
-
-
-func roundedRcptTotal(id string) string {
-	receipt := getCachedReceipt(id)
-	if receipt.Total == "" {
-		return "0.01"
-	}
-
-	total, err := strconv.ParseFloat(receipt.Total, 64)
-	if err != nil {
-			fmt.Println("Error parsing total to float:", err)
-			return "0.01"
-	}
-
-	roundedFloat := math.Round(total * 100) / 100
-	floatStr := strconv.FormatFloat(roundedFloat, 'f', 2, 64)
-	return floatStr
-}
